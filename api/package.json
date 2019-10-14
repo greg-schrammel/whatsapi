@@ -1,0 +1,11 @@
+{
+  "name": "api",
+  "version": "0.1.0",
+  "dependencies": {
+    "apollo-server-micro": "^2.9.0",
+    "cookie": "^0.4.0",
+    "firebase-admin": "^8.4.0",
+    "micro": "^9.3.4",
+    "require-dir": "^1.2.0"
+  }
+}
