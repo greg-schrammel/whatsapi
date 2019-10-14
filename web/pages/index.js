@@ -2,7 +2,7 @@ import React from 'react';
 import QRCode from 'qrcode-react';
 import { useMachine } from '@xstate/react';
 
-import sessionKeyMachine from './sessionKeyMachine';
+import sessionKeyMachine from '../src/sessionKeyMachine';
 
 function Loading() {
   return <span>carregando</span>;
