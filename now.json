@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "name": "aham",
+  "alias": ["schrammel.co", "uhul"],
+  "builds": [
+    { "src": "web/package.json", "use": "@now/next" },
+    {
+      "src": "api/graphql.js",
+      "use": "@now/node",
+      "config": {
+        "includeFiles": ["api/datasources/*", "api/modules/*"]
+      }
+    }
+  ],
+  "routes": [
+    { "src": "/w", "dest": "https://ilikebread.herokuapp.com/w" },
+    { "src": "/api", "dest": "api/graphql.js" },
+    { "src": "(.*)", "dest": "web$1" }
+  ],
+  "env": {
+    "GOOGLE_APPLICATION_CREDENTIALS": "@ilikebread-google-credentials"
+  }
+}

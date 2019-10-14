@@ -1,0 +1,23 @@
+{
+  "name": "web",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@xstate/react": "^0.7.1",
+    "isomorphic-unfetch": "^3.0.0",
+    "next": "^9.0.3",
+    "prop-types": "^15.7.2",
+    "pusher-js": "^5.0.2",
+    "qrcode-react": "^0.1.16",
+    "qrcode.react": "^0.9.3",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "uuid": "^3.3.3",
+    "websocket": "^1.0.30",
+    "xstate": "^4.6.7"
+  }
+}
