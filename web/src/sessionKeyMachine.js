@@ -4,7 +4,7 @@ import { connect, generateQR, haveKey } from './whatsapp_session';
 
 export default Machine(
   {
-    initial: 'init',
+    initial: 'generatingQR',
     context: {
       connection: connect(),
       qr: undefined,

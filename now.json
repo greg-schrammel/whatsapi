@@ -4,7 +4,7 @@
   "alias": ["schrammel.co", "uhul"],
   "builds": [{ "src": "web/package.json", "use": "@now/next" }],
   "routes": [
-    { "src": "/w", "dest": "https://ilikebread.herokuapp.com/w" },
+    { "src": "/w", "dest": "ws://ilikebread.herokuapp.com/w" },
     { "src": "(.*)", "dest": "web$1" }
   ],
   "env": {

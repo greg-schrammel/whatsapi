@@ -56,7 +56,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	qr := make(chan string)
 	go func() {
-		wsConn.WriteMessage(websocket.TextMessage, []byte("qr,"+<-qr))
+		for {
+			wsConn.WriteMessage(websocket.TextMessage, []byte("qr,"+<-qr))
+		}
 	}()
 
 	session, loginErr := whatsAppConn.Login(qr)
@@ -72,7 +74,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	wsConn.WriteMessage(websocket.TextMessage, []byte("id,"+sessionRef.Key))
 }
 
-var addr = flag.String("addr", ":3001", "http service address")
+var addr = flag.String("addr", "80", "http service address")
 
 func main() {
 	flag.Parse()
