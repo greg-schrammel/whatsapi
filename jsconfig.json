@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "target": "esnext",
+    "moduleResolution": "node",
+    "jsx": "react"
+  },
+  "exclude": ["node_modules"],
+  "typeAcquisition": {
+    "include": ["browser"]
+  }
+}

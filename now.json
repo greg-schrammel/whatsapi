@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "name": "aham",
+  "alias": ["schrammel.co", "uhul"],
+  "builds": [{ "src": "web/package.json", "use": "@now/next" }],
+  "routes": [
+    { "src": "/w", "dest": "https://ilikebread.herokuapp.com/w" },
+    { "src": "(.*)", "dest": "web$1" }
+  ],
+  "env": {
+    "GOOGLE_APPLICATION_CREDENTIALS": "@ilikebread-google-credentials"
+  }
+}
