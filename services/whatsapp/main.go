@@ -74,7 +74,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	wsConn.WriteMessage(websocket.TextMessage, []byte("id,"+sessionRef.Key))
 }
 
-var addr = flag.String("addr", "80", "http service address")
+var addr = flag.String("addr", ":3000", "http service address")
 
 func main() {
 	flag.Parse()
