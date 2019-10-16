@@ -1,6 +1,8 @@
 import { Machine, assign } from 'xstate';
 
-import { connect, generateQR, haveKey } from './whatsapp_session';
+import { connect } from './whatsapp_session';
+
+const sender = (send, type) => value => send({ type, value });
 
 export default Machine(
   {
@@ -19,19 +21,19 @@ export default Machine(
         on: {
           QR_READY: {
             target: 'awaitingQRScan',
-            actions: 'updateQR',
+            actions: 'setQR',
           },
         },
       },
       awaitingQRScan: {
         invoke: {
-          id: 'haveKey',
+          id: 'awaitKey',
           src: 'haveKey',
         },
         on: {
           REFRESH_QR: {
-            target: 'refreshingQR',
-            actions: 'updateQR',
+            target: 'awaitingQRScan',
+            actions: 'setQR',
           },
           GOT_KEY: {
             target: 'success',
@@ -54,25 +56,41 @@ export default Machine(
   },
   {
     services: {
-      generateQR: (ctx, _event) => send =>
-        generateQR(
-          ctx.connection,
-          value => send({ type: 'QR_READY', value }),
-          value => send({ type: 'ERROR', value }),
-        ),
-      haveKey: (ctx, _event) => send =>
-        haveKey(
-          ctx.connection,
-          value => send({ type: 'GOT_KEY', value }),
-          value => send({ type: 'ERROR', value }),
-        ),
+      generateQR: ctx => send => {
+        const cleanQRListener = ctx.connection.on(
+          'qr',
+          sender(send, 'QR_READY'),
+          sender(send, 'ERROR'),
+        );
+        return cleanQRListener;
+      },
+      haveKey: ctx => send => {
+        const sendError = sender(send, 'ERROR');
+        const cleanKeyListener = ctx.connection.on(
+          'id',
+          sender(send, 'GOT_KEY'),
+          sendError,
+        );
+        const cleanQRListener = ctx.connection.on(
+          'qr',
+          sender(send, 'REFRESH_QR'),
+          sendError,
+        );
+        return () => {
+          cleanKeyListener();
+          cleanQRListener();
+        };
+      },
     },
     actions: {
       setQR: assign({
-        qr: (_ctx, event) => event,
+        qr: (_ctx, { value }) => value,
       }),
       setKey: assign({
-        key: (_ctx, event) => event,
+        key: (_ctx, { value }) => {
+          console.log(value);
+          return value;
+        },
       }),
     },
   },

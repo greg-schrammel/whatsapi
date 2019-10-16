@@ -8,29 +8,37 @@ import (
 	"os"
 	"time"
 
+	whatsapp "./lib"
 	firebase "firebase.google.com/go"
-	whatsapp "github.com/Rhymen/go-whatsapp"
 	"github.com/gorilla/websocket"
 	"golang.org/x/net/context"
 	"google.golang.org/api/option"
 )
 
+func checkOrigin(r *http.Request) bool {
+	if r.URL.Hostname() == "schrammel.co" || os.Getenv("ENV") != "production" {
+		return true
+	}
+	return false
+}
+
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	CheckOrigin:     checkOrigin,
 }
 
 func firebaseApp(ctx context.Context) *firebase.App {
 	googleCredentials, decodingErr := base64.StdEncoding.DecodeString(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 	if decodingErr != nil {
-		log.Fatal(decodingErr)
+		log.Fatalf("google credentials: %v\n", decodingErr)
 	}
 	opt := option.WithCredentialsJSON(googleCredentials)
 	app, firebaseErr := firebase.NewApp(ctx, &firebase.Config{
 		DatabaseURL: "https://ilikebread-fb4b2.firebaseio.com",
 	}, opt)
 	if firebaseErr != nil {
-		log.Fatal(firebaseErr)
+		log.Fatalf("firebase app: %v\n", firebaseErr)
 	}
 	return app
 }
@@ -74,7 +82,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	wsConn.WriteMessage(websocket.TextMessage, []byte("id,"+sessionRef.Key))
 }
 
-var addr = flag.String("addr", ":3000", "http service address")
+var addr = flag.String("addr", ":3001", "http service address")
 
 func main() {
 	flag.Parse()

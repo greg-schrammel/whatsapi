@@ -1,23 +1,23 @@
 export function connect() {
   if (typeof window === 'undefined') return {};
-  const connection = new WebSocket('ws://127.0.0.1:3000/w');
+  const connection = new WebSocket(`ws://${document.location.host}/w`);
   return {
     on: (tag, onMessage, onError) => {
-      connection.onmessage = message => {
-        if (message.type !== 'utf8') return;
-        const [payloadTag, payload] = message.utf8Data.split(/,(.*)/);
+      const messageListener = ({ data }) => {
+        const [payloadTag, payload] = data.split(/,(.*)/);
         if (payloadTag === tag) onMessage(payload);
       };
-      connection.onerror = onError;
+      const errorListener = ({ data }) => {
+        onError(data);
+      };
+
+      connection.addEventListener('error', errorListener, { once: true });
+      connection.addEventListener('message', messageListener, { once: true });
+      return () => {
+        connection.removeEventListener('message', messageListener);
+        connection.removeEventListener('error', errorListener);
+      };
     },
   };
 }
-
-export async function generateQR(connection, send, sendError) {
-  connection.on('qr', send, sendError);
-}
-
-export async function haveKey(connection, refreshQR, send, sendError) {
-  connection.on('qr', refreshQR, sendError);
-  connection.on('id', send, sendError);
-}
+export default connect;

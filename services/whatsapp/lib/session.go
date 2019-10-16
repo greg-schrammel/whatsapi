@@ -259,7 +259,7 @@ func (wac *Conn) Login(qrChan chan<- string) (Session, error) {
 
 	var setQRAndWaitResp func(qrRef string, retries int) ([]interface{}, error)
 	setQRAndWaitResp = func(qrRef string, retries int) ([]interface{}, error) {
-		qrChan <- fmt.Sprintf("%v,%v,%v", ref, base64.StdEncoding.EncodeToString(pub[:]), clientId)
+		qrChan <- fmt.Sprintf("%v,%v,%v", ref, base64.StdEncoding.EncodeToString(pub[:]), session.ClientId)
 		var resp2 []interface{}
 		select {
 		case r1 := <-s1:
@@ -269,7 +269,7 @@ func (wac *Conn) Login(qrChan chan<- string) (Session, error) {
 				return nil, fmt.Errorf("error decoding qr code resp: %v", err)
 			}
 		case <-time.After(time.Duration(resp["ttl"].(float64)) * time.Millisecond):
-			if retries >= 10 {
+			if retries >= 8 {
 				return nil, fmt.Errorf("qr code scan timed out")
 			}
 			newRef, rerefErr := wac.reref()
