@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/base64"
 	"flag"
 	"log"
 	"net/http"
@@ -9,14 +8,13 @@ import (
 	"time"
 
 	whatsapp "./lib"
-	firebase "firebase.google.com/go"
+	utils "./utils"
 	"github.com/gorilla/websocket"
 	"golang.org/x/net/context"
-	"google.golang.org/api/option"
 )
 
 func checkOrigin(r *http.Request) bool {
-	if r.URL.Hostname() == "schrammel.co" || os.Getenv("ENV") != "production" {
+	if os.Getenv("ENV") != "production" {
 		return true
 	}
 	return false
@@ -28,24 +26,12 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin:     checkOrigin,
 }
 
-func firebaseApp(ctx context.Context) *firebase.App {
-	googleCredentials, decodingErr := base64.StdEncoding.DecodeString(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
-	if decodingErr != nil {
-		log.Fatalf("google credentials: %v\n", decodingErr)
-	}
-	opt := option.WithCredentialsJSON(googleCredentials)
-	app, firebaseErr := firebase.NewApp(ctx, &firebase.Config{
-		DatabaseURL: "https://ilikebread-fb4b2.firebaseio.com",
-	}, opt)
-	if firebaseErr != nil {
-		log.Fatalf("firebase app: %v\n", firebaseErr)
-	}
-	return app
-}
-
 func handler(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
-	firebaseApp := firebaseApp(ctx)
+	firebaseApp, firebaseAppErr := utils.MakeFirebaseApp(ctx)
+	if firebaseAppErr != nil {
+		log.Fatal(firebaseAppErr)
+	}
 	db, dbErr := firebaseApp.Database(ctx)
 	if dbErr != nil {
 		log.Fatal(dbErr)
@@ -66,6 +52,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	go func() {
 		for {
 			wsConn.WriteMessage(websocket.TextMessage, []byte("qr,"+<-qr))
+			log.Print(<-qr)
 		}
 	}()
 

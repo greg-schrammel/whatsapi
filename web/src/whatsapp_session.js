@@ -1,6 +1,6 @@
 export function connect() {
   if (typeof window === 'undefined') return {};
-  const connection = new WebSocket(`ws://${document.location.host}/w`);
+  const connection = new WebSocket(`ws://127.0.0.1:3001/w`);
   return {
     on: (tag, onMessage, onError) => {
       const messageListener = ({ data }) => {

@@ -166,12 +166,14 @@ func (wac *Conn) reref() (string, error) {
 	reref := []interface{}{"admin", "Conn", "reref"}
 	rerefChan, rerefErr := wac.writeJson(reref)
 	if rerefErr != nil {
-		return "", fmt.Errorf("error rerefing qr code: %v\n", rerefErr)
+		return "", fmt.Errorf("error rerefing qr code: %v", rerefErr)
 	}
 	var resp map[string]interface{}
-	if respErr := json.Unmarshal([]byte(<-rerefChan), &resp); respErr != nil {
-		return "", fmt.Errorf("error decoding reref resp: %v\n", respErr)
+	respErr := json.Unmarshal([]byte(<-rerefChan), &resp)
+	if respErr != nil {
+		return "", fmt.Errorf("error decoding reref resp: %v", respErr)
 	}
+
 	return resp["ref"].(string), nil
 }
 

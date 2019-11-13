@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import QRCode from 'qrcode-react';
 import { useMachine } from '@xstate/react';
@@ -8,13 +9,17 @@ function Loading() {
   return <span>carregando</span>;
 }
 function Error({ onRetry }) {
-  return <button onClick={onRetry}>ERRO</button>;
+  return (
+    <button type="button" onClick={onRetry}>
+      ERRO
+    </button>
+  );
 }
 function Key({ value }) {
   return <span>{value}</span>;
 }
 
-function Home() {
+function Session() {
   const [current, send] = useMachine(sessionKeyMachine);
   return {
     generatingQR: <Loading />,
@@ -24,4 +29,4 @@ function Home() {
   }[current.value];
 }
 
-export default Home;
+export default Session;
