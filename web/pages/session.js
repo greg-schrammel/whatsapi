@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React from 'react';  
 import QRCode from 'qrcode-react';
 import { useMachine } from '@xstate/react';
 

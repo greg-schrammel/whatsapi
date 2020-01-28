@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	whatsapp "./lib"
+	whatsapp "../lib/whatsapp"
 	utils "./utils"
 	"github.com/gorilla/websocket"
 	"golang.org/x/net/context"
