@@ -1,8 +1,6 @@
-const WS_URL = `ws://127.0.0.1:3001/w`;
-
 export function connect() {
   if (typeof window === "undefined") return {};
-  const connection = new WebSocket(WS_URL);
+  const connection = new WebSocket(process.env.WS_URL);
   return {
     on: (tag, onMessage, onError) => {
       const messageListener = ({ data }) => {
