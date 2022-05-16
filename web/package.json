@@ -9,7 +9,7 @@
   "dependencies": {
     "@xstate/react": "^0.7.1",
     "isomorphic-unfetch": "^3.0.0",
-    "next": "^9.0.3",
+    "next": "^12.1.0",
     "prop-types": "^15.7.2",
     "pusher-js": "^5.0.2",
     "qrcode-react": "^0.1.16",
